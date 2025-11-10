@@ -1,6 +1,10 @@
 <nav class="left-nav">
 
-  <a mat-button routerLink="/prearrangement" routerLinkActive="active">
+  <a
+    mat-button
+    [class.active]="isActive('/prearrangement')"
+    (click)="navigateTo('/prearrangement')"
+  >
     <mat-icon>assignment</mat-icon>
     Pre-arrangement Process
   </a>

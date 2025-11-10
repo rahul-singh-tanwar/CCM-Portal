@@ -26,7 +26,7 @@ export async function searchApi(payload: Object): Promise<Object | undefined> {
     try {
         const token = await getAccessToken();
 
-    
+
         const API_URL = BaseURL + "v2/user-tasks/search";
 
         const { data } = await axios.post(API_URL, payload, {
@@ -43,4 +43,24 @@ export async function searchApi(payload: Object): Promise<Object | undefined> {
     }
 }
 
-export default searchApi;
+export async function stratProccess(payload: Object): Promise<Object | undefined> {
+    try {
+        const token = await getAccessToken();
+
+
+        const API_URL = BaseURL + "v2/start-process";
+
+        const { data } = await axios.post(API_URL, payload, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+            },
+        });
+
+        return data;
+    } catch (err) {
+        console.error("Error in searchApi:", err);
+        return undefined;
+    }
+}
+

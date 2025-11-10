@@ -35,4 +35,10 @@
   [department]="selectedDepartment" 
   (formSubmitted)="onFormSubmit($event)">
 </app-pre-arrangement-form>
+<div *ngIf="showReview">
+  <button type="button" class="back-btn">
+    <mat-icon>arrow_back</mat-icon> Go Back
+  </button>
+  <app-review-policies></app-review-policies>
+</div>
 

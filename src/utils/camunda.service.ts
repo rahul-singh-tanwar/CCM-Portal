@@ -1,20 +1,21 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable,  BehaviorSubject} from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class CamundaService {
   private baseUrl = 'http://localhost:3000';
+  private processIntanceKey = new BehaviorSubject<string>('');
+  processIntanceKey$ = this.processIntanceKey.asObservable();
+
+  setProcessInstanceKey(key: string) {
+    this.processIntanceKey.next(key);
+  }
 
   constructor(private http: HttpClient) {}
 
-  startProcess(): Observable<any> {
-    return this.http.post(`${this.baseUrl}/start-process`, {
-      //processDefinitionKey: '2251799813686509', // your BPMN ID
-      processDefinitionId: 'PreArrangementProcess',
-      processDefinitionVersion: 17,
-      variables: {}
-    });
+  async startProcess(payload: Object): Promise<Object> {
+    return this.http.post(`${this.baseUrl}/start-process`, payload);
   }
 
   searchUserTasks(): Observable<any> {

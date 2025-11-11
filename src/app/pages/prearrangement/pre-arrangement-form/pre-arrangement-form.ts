@@ -18,6 +18,7 @@ export class PreArrangementForm implements OnInit{
   taskname = '';
   processInstanceId = '2251799814227796';
   userTaskKey = '';
+  processInstanceKey = '';
 
   @Input() set department(value: 'IPD' | 'OPD') {
     if (value) this.onDepartmentChange(value);
@@ -48,6 +49,11 @@ export class PreArrangementForm implements OnInit{
       const dept = params['dept'];
       if (dept === 'IPD' || dept === 'OPD') {
         this.department = dept;
+      }
+    });
+    this.camundaService.processIntanceKey$.subscribe(key => {
+      if (key) {
+        this.processInstanceKey = key;
       }
     });
   }
@@ -83,6 +89,7 @@ export class PreArrangementForm implements OnInit{
       const fv = this.form.value;
       const processDefinitionId = (searchApi as any)?.processDefinitionId || 'variable need to inserted';
 
+
       const payload = {
         state: 'ASSIGNED',
         assignee: 'demo',
@@ -106,7 +113,7 @@ export class PreArrangementForm implements OnInit{
         ],
         localVariables: [],
         userTaskKey: 'string',
-        processDefinitionKey: '2251799813686749',
+        processDefinitionKey: this.processInstanceKey,
         processInstanceKey: '2251799813690746',
         elementInstanceKey: '2251799813686789',
       };

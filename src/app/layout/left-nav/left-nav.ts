@@ -3,7 +3,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
-import { stratProccess } from '../../../utils/searchService';
+import { CamundaService } from '../../../utils/camunda.service';
 
 @Component({
   selector: 'app-left-nav',
@@ -14,9 +14,8 @@ import { stratProccess } from '../../../utils/searchService';
 export class LeftNav {
    @Input() collapsed = false;
 
-   constructor(private router: Router ) {
-    
-   }
+   constructor(private router: Router, private camundaService: CamundaService ) 
+   {}
 
 
   navigateTo(route: string) {
@@ -29,7 +28,11 @@ export class LeftNav {
       variables: {}
     }
 
-    stratProccess(payload).then(response => {
+    this.camundaService.startProcess(payload).then((response: any) => {
+
+      const processInstanceKey = response?.processInstanceKey;
+
+      this.camundaService.setProcessInstanceKey(processInstanceKey || '');
       console.log('Process started successfully:', response);
     }).catch(error => {
       console.error('Error starting process:', error);

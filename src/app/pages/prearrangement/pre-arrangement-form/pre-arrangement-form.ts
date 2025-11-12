@@ -129,7 +129,6 @@ export class PreArrangementForm implements OnInit {
         .subscribe({
           next: (res) => {
             this.userTaskKey = res.userTaskKey;
-
             const variables = {
               customerInfo: {
                 nationalId: fv.nationalId || '',
@@ -155,7 +154,6 @@ export class PreArrangementForm implements OnInit {
                 console.error('❌ Error completing task:', err);
               },
             });
-
           },
           error: (err) => {
             console.error('Error fetching user task:', err);

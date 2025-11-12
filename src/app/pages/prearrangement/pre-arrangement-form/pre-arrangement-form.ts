@@ -1,8 +1,8 @@
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule  } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute  } from '@angular/router'; 
-import {searchApi} from '../../../../utils/searchService';
+import { ActivatedRoute } from '@angular/router';
+import { searchApi } from '../../../../utils/searchService';
 import { CamundaService } from '../../../../utils/camunda.service';
 
 @Component({
@@ -11,12 +11,11 @@ import { CamundaService } from '../../../../utils/camunda.service';
   templateUrl: './pre-arrangement-form.html',
   styleUrl: './pre-arrangement-form.css',
 })
-export class PreArrangementForm implements OnInit{
+export class PreArrangementForm implements OnInit {
 
   form: FormGroup;
   departmentValue: 'IPD' | 'OPD' = 'IPD';
   taskname = '';
-  processInstanceId = '2251799814227796';
   userTaskKey = '';
   processInstanceKey = '';
 
@@ -96,19 +95,19 @@ export class PreArrangementForm implements OnInit{
         processDefinitionId,
         processInstanceVariables: [
           {
-        customerInfo: {
-          nationalId: fv.nationalId || '',
-          policyNumber: fv.policyNumber || '',
-        },
-        visitInfo: {
-          visitType: fv.visitType || '',
-          reservationType: fv.reservationType || '',
-          HospitalName: fv.hospitalName || '',
-          ICD10: fv.icd10 || '',
-          ICD9: fv.icd9 || '',
-          AdmissionDate: fv.admissionDate || '',
-          AccidentDate: fv.accidentDate || '',
-        },
+            customerInfo: {
+              nationalId: fv.nationalId || '',
+              policyNumber: fv.policyNumber || '',
+            },
+            visitInfo: {
+              visitType: fv.visitType || '',
+              reservationType: fv.reservationType || '',
+              HospitalName: fv.hospitalName || '',
+              ICD10: fv.icd10 || '',
+              ICD9: fv.icd9 || '',
+              AdmissionDate: fv.admissionDate || '',
+              AccidentDate: fv.accidentDate || '',
+            },
           },
         ],
         localVariables: [],
@@ -126,57 +125,46 @@ export class PreArrangementForm implements OnInit{
         },
       };
 
-      this.camundaService.getUserTaskByProcessInstance(this.processInstanceId, this.taskname)
+      this.camundaService.getUserTaskByProcessInstance(this.processInstanceKey, this.taskname)
         .subscribe({
-           next: (res) => {
-             this.userTaskKey = res.userTaskKey;                          
+          next: (res) => {
+            this.userTaskKey = res.userTaskKey;
+
+            const variables = {
+              customerInfo: {
+                nationalId: fv.nationalId || '',
+                policyNumber: fv.policyNumber || '',
+              },
+              visitInfo: {
+                visitType: fv.visitType || '',
+                reservationType: fv.reservationType || '',
+                HospitalName: fv.hospitalName || '',
+                ICD10: fv.icd10 || '',
+                ICD9: fv.icd9 || '',
+                AdmissionDate: fv.admissionDate || '',
+                AccidentDate: fv.accidentDate || '',
+              }
+            }
+
+            // Complete user task
+            this.camundaService.completeUserTask(this.userTaskKey, variables).subscribe({
+              next: () => {
+                
+              },
+              error: (err) => {
+                console.error('❌ Error completing task:', err);
+              },
+            });
+
           },
           error: (err) => {
             console.error('Error fetching user task:', err);
-          //  this.message = 'Failed to fetch user task';
+            //  this.message = 'Failed to fetch user task';
           }
         });
-
-        const variables = {customerInfo: {
-          nationalId: fv.nationalId || '',
-          policyNumber: fv.policyNumber || '',
-        },
-        visitInfo: {
-          visitType: fv.visitType || '',
-          reservationType: fv.reservationType || '',
-          HospitalName: fv.hospitalName || '',
-          ICD10: fv.icd10 || '',
-          ICD9: fv.icd9 || '',
-          AdmissionDate: fv.admissionDate || '',
-          AccidentDate: fv.accidentDate || '',
-        }
-      };
-
-       this.userTaskKey = this.userTaskKey;
-       console.log("user task Key ", this.userTaskKey);
-         // Complete user task
-       this.camundaService.completeUserTask(this.userTaskKey, variables).subscribe({
-  next: () => {
-    console.log('✅ Task completed successfully');
-  },
-  error: (err) => {
-    console.error('❌ Error completing task:', err);
-  },
-});
-
-     
-      /*  searchApi(body).then((response) => {
-            console.log('API Response:', response);
-            this.formSubmitted.emit(response);  
-        }).catch((error) => {
-            console.error('API Error:', error);
-        });
-        */
-        
-
-      } else {
+    } else {
       console.warn('⚠️ Form is invalid. Please check the required fields.');
-        }
-        
-      }
+    }
+
+  }
 }

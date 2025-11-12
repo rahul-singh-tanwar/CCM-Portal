@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import {PreArrangementForm} from './pre-arrangement-form/pre-arrangement-form';
 import { Router } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
-import { ReviewPolicies } from '../review-policies/review-policies';
+import { ReviewPolicies } from './review-policies/review-policies';
 
 @Component({
   selector: 'app-prearrangement',

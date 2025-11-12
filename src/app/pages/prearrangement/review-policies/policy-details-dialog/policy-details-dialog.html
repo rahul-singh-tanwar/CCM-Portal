@@ -1,0 +1,42 @@
+<h2 mat-dialog-title>Policy Details — {{ data.companyName }}</h2>
+
+<div mat-dialog-content>
+  <div class="policy-info">
+    <p><strong>Policy Number:</strong> {{ data.policyNumber }}</p>
+    <p><strong>Policy Type:</strong> {{ data.policyType }}</p>
+    <p><strong>Status:</strong> {{ data.policyStatus }}</p>
+    <p><strong>Effective Date:</strong> {{ data.effectiveDate }}</p>
+    <p><strong>Expiry Date:</strong> {{ data.expiryDate }}</p>
+  </div>
+
+  <h3>Benefits</h3>
+  <div class="table-wrapper">
+    <table class="inner-table">
+      <thead>
+        <tr>
+          <th>Benefit Name</th>
+          <th>Limit</th>
+          <th>Remarks</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let b of data.benefits">
+          <td>{{ b.name }}</td>
+          <td>{{ b.limit }}</td>
+          <td>{{ b.remarks }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <hr />
+
+  <h3>Upload Documents</h3>
+  <app-file-upload title="Lab Result Documents"></app-file-upload>
+  <app-file-upload title="Form Documents"></app-file-upload>
+  <app-file-upload title="Other Documents"></app-file-upload>
+</div>
+
+<div mat-dialog-actions align="end">
+  <button mat-stroked-button mat-dialog-close>Close</button>
+</div>

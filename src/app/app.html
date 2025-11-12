@@ -1,4 +1,4 @@
-<ng-container *ngIf="checkLoggedIn() else loginTemplate">
+<ng-container *ngIf="checkLoggedIn()">
 <mat-sidenav-container class="app-container">
 
   <mat-sidenav #leftSidenav mode="side" opened class="left-sidenav">
@@ -34,6 +34,6 @@
   </mat-sidenav-content>
 </mat-sidenav-container>
 </ng-container> 
-<ng-template #loginTemplate>
+<!-- <ng-template #loginTemplate>
   <app-login></app-login>
-</ng-template>
+</ng-template> -->

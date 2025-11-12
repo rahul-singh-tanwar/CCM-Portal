@@ -1,0 +1,14 @@
+<div class="upload-section">
+  <h4>{{ title }}</h4>
+
+  <input type="file" multiple (change)="onFileSelected($event)">
+  
+  <ul *ngIf="files.length > 0">
+    <li *ngFor="let file of files; let i = index">
+      {{ file.name }}
+      <button mat-icon-button color="warn" (click)="removeFile(i)">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </li>
+  </ul>
+</div>

@@ -48,11 +48,11 @@ export class App {
 
   ngOnInit(): void {
     // 1️⃣ On app load, check token
-    const isLoggedIn = this.authService.isAuthenticated();
+    // const isLoggedIn = this.authService.isAuthenticated();
 
-    if (!isLoggedIn) {
-      this.authService.logout(); // clears token and routes to /login
-    }
+    // if (!isLoggedIn) {
+    //   this.authService.logout(); // clears token and routes to /login
+    // }
 
 
     // 2️⃣ Listen to route changes

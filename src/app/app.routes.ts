@@ -5,15 +5,15 @@ import { ProcessPerformance } from './pages/process-performance/process-performa
 import { AdminConsole } from './pages/admin-console/admin-console';
 import { PreArrangementForm } from './pages/prearrangement/pre-arrangement-form/pre-arrangement-form';
 import { Login } from './pages/login/login';
-import { ReviewPolicies } from './pages/review-policies/review-policies';
+import { ReviewPolicies } from './pages/prearrangement/review-policies/review-policies';
 
 export const routes: Routes = [
+    { path: '', redirectTo: 'prearrangement', pathMatch: 'full' },
+    { path: 'review-policies', component: ReviewPolicies },
+    { path: 'prearrangement', component: Prearrangement },
+    { path: 'team-performance', component: TeamPerformance },
+    { path: 'process-performance', component: ProcessPerformance },
+    { path: 'admin-console', component: AdminConsole },
+    { path: 'prearrangement/form', component: PreArrangementForm },
     {path: 'login', component: Login},
-{ path: '', redirectTo: 'prearrangement', pathMatch: 'full' },
-{ path: 'review-policies', component: ReviewPolicies },
-  { path: 'prearrangement', component: Prearrangement },
-  { path: 'team-performance', component: TeamPerformance },
-  { path: 'process-performance', component: ProcessPerformance },
-  { path: 'admin-console', component: AdminConsole },
-  { path: 'prearrangement/form', component: PreArrangementForm },
 ];

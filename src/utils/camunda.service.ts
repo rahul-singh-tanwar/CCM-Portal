@@ -6,11 +6,15 @@ import { Observable, BehaviorSubject } from 'rxjs';
 export class CamundaService {
   private baseUrl = 'http://localhost:3000';
   private processIntanceKey = new BehaviorSubject<string>('');
+  private proccessInstanceId = new BehaviorSubject<string>('');
   processIntanceKey$ = this.processIntanceKey.asObservable();
+  proccessInstanceId$ = this.proccessInstanceId.asObservable();
 
   setProcessInstanceKey(key: string) {
     this.processIntanceKey.next(key);
   }
+
+
 
   constructor(private http: HttpClient) { }
 

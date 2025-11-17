@@ -11,7 +11,7 @@ export class CamundaService {
   constructor(private http: HttpClient, private authService: AuthService) {
     this.token = this.authService.getToken();
   }
-  
+
   private baseUrl = 'http://localhost:3000';
   private processIntanceKey = new BehaviorSubject<string>('');
   private proccessInstanceId = new BehaviorSubject<string>('');
@@ -31,13 +31,13 @@ export class CamundaService {
     return this.http.post(`${this.baseUrl}/start-process`, payload, this.getAuthOptions());
   }
 
-uploadFiles(files: File[]): Observable<any> {
-  const formData = new FormData();
+  uploadFiles(files: File[]): Observable<any> {
+    const formData = new FormData();
 
-  files.forEach(file => formData.append('files', file));
+    files.forEach(file => formData.append('files', file));
 
-  return this.http.post(`${this.baseUrl}/upload`, formData);
-}
+    return this.http.post(`${this.baseUrl}/upload`, formData);
+  }
 
   searchUserTasks(): Observable<any> {
     return this.http.get(`${this.baseUrl}/searchUserTasks`, this.getAuthOptions());

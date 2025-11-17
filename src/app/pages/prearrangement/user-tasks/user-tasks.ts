@@ -13,7 +13,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
-import { CamundaFormComponent } from '../../../services/camunda-form.component';
+// import { CamundaFormComponent } from '../../../services/camunda-form.component';
 import { Router } from '@angular/router';
 import { CamundaService } from '../../../../utils/camunda.service';
 
@@ -36,7 +36,6 @@ import { CamundaService } from '../../../../utils/camunda.service';
         MatInputModule,
         MatChipsModule,
         MatIconModule,
-        CamundaFormComponent,
     ],
     templateUrl: './user-tasks.html',
     styleUrls: ['./user-tasks.scss'],

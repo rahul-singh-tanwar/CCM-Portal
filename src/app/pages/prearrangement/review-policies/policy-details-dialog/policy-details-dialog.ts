@@ -5,8 +5,10 @@ import { FileUpload } from '../file-upload/file-upload';
 import { FormsModule, NgForm } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field'; // <mat-form-field>
 import { MatInputModule } from '@angular/material/input';          // <input matInput>
-import { MatButtonModule } from '@angular/material/button'; 
+import { MatButtonModule } from '@angular/material/button';
 import { CamundaService } from '../../../../../utils/camunda.service';
+import { switchMap, tap, catchError } from 'rxjs/operators';
+import { of } from 'rxjs';
 
 @Component({
   selector: 'app-policy-details-dialog',
@@ -19,7 +21,7 @@ export class PolicyDetailsDialog {
   physicianLicense: string = '';
   simbAmount: number | null = null;
   taskname = 'Upload Documents';
-  userTaskKey ='';
+  userTaskKey = '';
   processInstanceKey = '';
 
   @ViewChild('labFiles') labFiles!: FileUpload;
@@ -30,17 +32,25 @@ export class PolicyDetailsDialog {
     @Inject(MAT_DIALOG_DATA) public data: any,
     private dialogRef: MatDialogRef<PolicyDetailsDialog>,
     private camundaService: CamundaService
-  ) {}
+  ) { }
 
   close() {
     this.dialogRef.close();
   }
+
+  getDateDifference(start: Date, end: Date): number {
+    const diffMs = end.getTime() - start.getTime();
+    return Math.floor(diffMs / (1000 * 60 * 60 * 24)); // Convert to days
+  }
+  
 
   submit(form: NgForm) {
     if (!form.valid) {
       form.control.markAllAsTouched();
       return;
     }
+
+    let variables: any = {};
 
     // Collect uploaded files
     const uploadedFiles = {
@@ -49,70 +59,51 @@ export class PolicyDetailsDialog {
       otherFiles: this.otherFiles.getFiles()
     };
 
-    // Create payload
-    const payload = {
-      physicianLicense: this.physicianLicense,
-      simbAmount: this.simbAmount,
-      uplaodfiles: uploadedFiles,
-      // policy: this.data,
-      // policy_number: this.data.policyNumber
-      // policyAge: calculate from this.data.dateOfBirth
-    };
-
-    // Policy number
-
     this.taskname = 'Upload Documents';
-     this.camundaService.processIntanceKey$.subscribe(key => {
-      if (key) {
-        this.processInstanceKey = key;
-      }
-    });
+    this.camundaService.processIntanceKey$.pipe(
 
-    // Get User task key and complete Task
-     this.camundaService.getUserTaskByProcessInstance(this.processInstanceKey, this.taskname)
-        .subscribe({
-          next: (res) => {
-            this.userTaskKey = res.userTaskKey;
-         /*   const variables = {
-              customerInfo: {
-                nationalId: fv.nationalId || '',
-                policyNumber: fv.policyNumber || '',
-              },
-              visitInfo: {
-                visitType: fv.visitType || '',
-                reservationType: fv.reservationType || '',
-                HospitalName: fv.hospitalName || '',
-                ICD10: fv.icd10 || '',
-                ICD9: fv.icd9 || '',
-                AdmissionDate: fv.admissionDate || '',
-                AccidentDate: fv.accidentDate || '',
-              }
-            }*/
-          }
-          });
+    tap(key => this.processInstanceKey = key),
 
-          const variables ={};
+    switchMap(() =>
+      this.camundaService.getUserTaskByProcessInstance(
+        this.processInstanceKey,
+        this.taskname
+      )
+    ),
 
-            // Complete user task
-            this.camundaService.completeUserTask(this.userTaskKey, variables).subscribe({
-              next: () => {
-                     userTaskKey: this.userTaskKey,
-                                    
-                    variables
-            /*      this.formSubmitted.emit({
-                    userTaskKey: this.userTaskKey,
-                    processInstanceKey: this.processInstanceKey,
-                    payload,
-                    variables
-                  });*/
-                  console.log('✅ Task completed and formSubmitted emitted');
-              },
-              error: (err) => {
-                console.error('❌ Error completing task:', err);
-              },
-            });
-         
-    
+    tap(res => {
+      this.userTaskKey = res.userTaskKey;
+    }),
+
+    tap(() => {
+      variables = {
+        physicianLicense: this.physicianLicense,
+        policy_number: this.data.policyNumber,
+        simbAmount: this.simbAmount,
+        uplaodfiles: uploadedFiles,
+        policyAge: this.getDateDifference(
+          new Date(this.data.effectiveDate),
+          new Date(this.data.firstUseDate)
+        ),
+      };
+    }),
+
+    switchMap(() =>
+      this.camundaService.completeUserTask(this.userTaskKey, variables)
+    ),
+
+    catchError(err => {
+      console.error('❌ Error in workflow:', err);
+      return of(null);
+    })
+
+  ).subscribe({
+    next: () => {
+      console.log('✔ Task completed successfully');
+    }
+  });
+
+
     // Expose payload to parent via close() or custom event
     this.close();
     // this.dialogRef.close(payload);

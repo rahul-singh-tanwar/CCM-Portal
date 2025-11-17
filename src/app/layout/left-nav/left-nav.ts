@@ -28,22 +28,22 @@ export class LeftNav {
 
     this.router.navigate([route]);
     
-    const payload = {
-      processDefinitionId: 'PreArrangementProcess',
-      processDefinitionVersion: -1,
-      variables: {}
-    }
+    // const payload = {
+    //   processDefinitionId: 'PreArrangementProcess',
+    //   processDefinitionVersion: -1,
+    //   variables: {}
+    // }
 
-    this.camundaService.startProcess(payload)
-      .subscribe((response: any) => {
+    // this.camundaService.startProcess(payload)
+    //   .subscribe((response: any) => {
 
-        const processInstanceKey = response?.processInstanceKey;
-        this.camundaService.setProcessInstanceKey(processInstanceKey || '');
-        console.log('Process started successfully:', response);
-      }, error => {
-        console.error('Error starting process:', error);
-      }
-    );
+    //     const processInstanceKey = response?.processInstanceKey;
+    //     this.camundaService.setProcessInstanceKey(processInstanceKey || '');
+    //     console.log('Process started successfully:', response);
+    //   }, error => {
+    //     console.error('Error starting process:', error);
+    //   }
+    // );
     
     // .then((response: any) => {
 

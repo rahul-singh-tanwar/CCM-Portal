@@ -4,6 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { IframeService } from '../../services/iframe.service';
+import { CamundaService } from '../../../utils/camunda.service';
 
 @Component({
   selector: 'app-left-nav',
@@ -16,7 +17,7 @@ export class LeftNav {
 
    private static readonly PREARRANGEMENT_ROUTE = '/prearrangement';
 
-   constructor(private iframeService: IframeService, private router: Router ) 
+   constructor(private iframeService: IframeService, private router: Router, private camundaService: CamundaService) 
    {}
 
   openIframe(url: string) {

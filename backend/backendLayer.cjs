@@ -1,25 +1,25 @@
 const express = require("express");
 const axios = require("axios");
 const cors = require("cors");
- 
- 
+
+
 const multer = require("multer");
 const fs = require("fs");
- 
+
 const upload = multer({ dest: "uploads/" });
- 
+
 const app = express();
 app.use(express.json());
 app.use(cors()); // allow requests from frontend
- 
- 
+
+
 // ===== Keycloak + Camunda Config =====
 const KEYCLOAK_TOKEN_URL =
   "http://localhost:18080/auth/realms/camunda-platform/protocol/openid-connect/token";
 const CLIENT_ID = "orchestration";
 const CLIENT_SECRET = "secret";
 const CAMUNDA_API_URL = "http://localhost:8088/v2";
- 
+
 async function getAccessToken(req) {
   const authHeader = req.headers.authorization || req.get("Authorization");
   let token;
@@ -28,7 +28,7 @@ async function getAccessToken(req) {
     token = authHeader.startsWith("Bearer ") ? authHeader.slice(7) : authHeader;
     console.log("Using token from incoming Authorization header");
   } else {
-      return null;
+    return null;
   }
 
   return token;
@@ -61,10 +61,10 @@ app.post("/login", async (req, res) => {
 });
 
 
- 
+
 // ===== API endpoint to start a Camunda process =====
 app.post("/start-process", async (req, res) => {
- const {processDefinitionId, processDefinitionVersion, variables} = req.body;
+  const { processDefinitionId, processDefinitionVersion, variables } = req.body;
   try {
 
     const token = await getAccessToken(req);
@@ -82,18 +82,18 @@ app.post("/start-process", async (req, res) => {
         },
       }
     );
-   
-    res.json({ message: "Process started successfully", processInstanceKey : response.data.processInstanceKey });
- 
-    } catch (err) {
+
+    res.json({ message: "Process started successfully", processInstanceKey: response.data.processInstanceKey });
+
+  } catch (err) {
     console.error(err.response?.data || err.message);
     res.status(500).json({ error: err.response?.data || err.message });
   }
 });
- 
+
 // Search user tasks
 app.post("/user-tasks/search", async (req, res) => {
-  
+
   const { processInstanceKey, name } = req.body;
 
   const token = await getAccessToken(req);
@@ -113,18 +113,20 @@ app.post("/user-tasks/search", async (req, res) => {
         "page": {
           "from": 0,
           "limit": 100
-        }},
-      { headers: {
+        }
+      },
+      {
+        headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
       }
     );
- 
+
     // ✅ Log formatted message to backend console
     console.log("✅ User Task retreived successfully:");
     console.log(JSON.stringify(response.data, null, 2));
- 
+
     const items = response.data.items || [];
     if (items.length > 0) {
       const userTaskKey = items[0].userTaskKey;
@@ -139,11 +141,11 @@ app.post("/user-tasks/search", async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch user task' });
   }
 });
- 
- 
- // Search user tasks by user id
- app.post("/user-tasks/searchbyUser", async (req, res) => {
- 
+
+
+// Search user tasks by user id
+app.post("/user-task-key/searchbyUser", async (req, res) => {
+
   const token = await getAccessToken(req);
 
   if (!token) {
@@ -151,25 +153,25 @@ app.post("/user-tasks/search", async (req, res) => {
   }
 
   try {
- 
+
     const response = await axios.post(
       `${CAMUNDA_API_URL}/user-tasks/search`,
       {
-          // Search filter
-          filter: {
-            state: "CREATED",
-            // Optional: state, assignee, candidateGroups
-            // state: ["CREATED", "ASSIGNED"],
-            assignee: "demo"
-      
-          },
-            // Optional: pagination
-          //  sorting: [{ sortBy: "createdAt", sortOrder: "asc" }],
-            "page": {
-        "from": 0,
-        "limit": 100
-      }
- 
+        // Search filter
+        filter: {
+          state: "CREATED",
+          // Optional: state, assignee, candidateGroups
+          // state: ["CREATED", "ASSIGNED"],
+          assignee: "demo"
+
+        },
+        // Optional: pagination
+        //  sorting: [{ sortBy: "createdAt", sortOrder: "asc" }],
+        "page": {
+          "from": 0,
+          "limit": 100
+        }
+
       },
       {
         headers: {
@@ -178,39 +180,81 @@ app.post("/user-tasks/search", async (req, res) => {
         },
       }
     );
- 
- // ✅ Log formatted message to backend console
+
+    // ✅ Log formatted message to backend console
     console.log("✅ User Task retreived successfully:");
     console.log(JSON.stringify(response.data, null, 2));
- 
+
     const items = response.data.items || [];
-        if (items.length > 0) {
-          const userTaskKey = items[0].userTaskKey;
-          const taskname =
-          console.log('✅ Found userTaskKey:', userTaskKey);
-          res.json({userTaskKey});
-          } else {
-          console.log('⚠️ No active user tasks found');
-          res.status(404).json({ message: 'No active user tasks found' });
-        }
-      } catch (error) {
-        console.error('❌ Error fetching user task:', error.message);
-        res.status(500).json({ error: 'Failed to fetch user task' });
-      }
+    if (items.length > 0) {
+      const userTaskKey = items[0].userTaskKey;
+      const taskname =
+        console.log('✅ Found userTaskKey:', userTaskKey);
+      res.json({ userTaskKey });
+    } else {
+      console.log('⚠️ No active user tasks found');
+      res.status(404).json({ message: 'No active user tasks found' });
+    }
+  } catch (error) {
+    console.error('❌ Error fetching user task:', error.message);
+    res.status(500).json({ error: 'Failed to fetch user task' });
+  }
+});
+
+// --- REST Endpoint for user-tasks/searchbyUser ---
+app.post('/user-tasks/searchbyUser', async (req, res) => {
+
+  try {
+    const { filter, page } = req.body;
+    const token = await getAccessToken();
+    if (!token) {
+      return res.status(401).json({ message: "Unauthorized: No access token provided" });
+    }
+
+    // Build Camunda API payload
+    // Dynamic filter handling
+    const camundaPayload = {
+      filter: {},
+      page: {
+        from: page?.from || 0,
+        limit: page?.limit || 50,
+      },
+    };
+
+    // Apply filters conditionally
+    if (filter?.state) camundaPayload.filter.state = filter.state;
+        camundaPayload.filter.assignee = filter.assignee;   
+
+    console.log("➡️ Sending Camunda Payload:", JSON.stringify(camundaPayload, null, 2));
+
+    const response = await fetch(`http://localhost:8088/v2/user-tasks/search`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`, // ✅ Fixed
+      },
+      body: JSON.stringify(camundaPayload),
     });
- 
-    //Complete a User task
- 
-    // ===== Complete a user task =====
+
+    const data = await response.json();
+    res.json(data);
+  } catch (err) {
+    console.error('Error fetching tasks:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+//Complete a User task
+
+// ===== Complete a user task =====
 app.post("/complete-user-task", async (req, res) => {
   const { userTaskKey, variables } = req.body;
- 
+
   const token = await getAccessToken(req);
 
   if (!token) {
     return res.status(401).json({ message: "Unauthorized: No access token provided" });
   }
- 
+
   try {
 
     const response = await axios.post(
@@ -223,7 +267,7 @@ app.post("/complete-user-task", async (req, res) => {
         }
       }
     );
- 
+
     return res.json({
       message: "User task completed successfully",
       data: response.data,
@@ -232,14 +276,14 @@ app.post("/complete-user-task", async (req, res) => {
     console.error(
       err.response?.data || err.message
     );
- 
+
     return res.status(500).json({
       message: "Failed to complete user task",
       error: err.response?.data || err.message,
     });
   }
 });
- 
+
 // Example: GET task variables from Camunda/Zeebe
 app.post('/user-tasks/:userTaskKey/variables', async (req, res) => {
   const { userTaskKey } = req.params;
@@ -249,9 +293,9 @@ app.post('/user-tasks/:userTaskKey/variables', async (req, res) => {
   if (!token) {
     return res.status(401).json({ message: "Unauthorized: No access token provided" });
   }
- 
+
   try {
- 
+
     const camundaResponse = await axios.post(
       `http://localhost:8088/v2/user-tasks/${userTaskKey}/variables/search`,
       {}, // body of POST request (empty JSON)
@@ -262,7 +306,7 @@ app.post('/user-tasks/:userTaskKey/variables', async (req, res) => {
         }
       }
     );
- 
+
     res.json(camundaResponse.data); // axios stores response in .data
   } catch (err) {
     console.error('Failed to fetch task variables', err);
@@ -385,11 +429,11 @@ app.get('/:userTaskKey/form', async (req, res) => {
   }
 });
 */
- 
- 
+
+
 app.get('/:userTaskKey/form', async (req, res) => {
   const { userTaskKey } = req.params;
-  
+
   const token = await getAccessToken(req);
 
   if (!token) {
@@ -397,15 +441,15 @@ app.get('/:userTaskKey/form', async (req, res) => {
   }
 
   try {
- 
+
     // 1️⃣ Fetch form schema from Camunda
     const formRes = await axios.get(
       `http://localhost:8088/v2/user-tasks/${userTaskKey}/form`,
       { headers: { Authorization: `Bearer ${token}` } }
     );
- 
+
     let formSchema = formRes.data.schema;
- 
+
     // 2️⃣ Safely parse schema if it is a string
     if (typeof formSchema === 'string') {
       try {
@@ -421,14 +465,14 @@ app.get('/:userTaskKey/form', async (req, res) => {
         }
       }
     }
- 
+
     // 3️⃣ Fetch all variables for this task
     const varsRes = await axios.post(
       `http://localhost:8088/v2/user-tasks/${userTaskKey}/variables/search`,
-      {  },
+      {},
       { headers: { Authorization: `Bearer ${token}` } }
     );
- 
+
     // 4️⃣ Flatten variables into simple key:value object
     const variables = {};
     if (Array.isArray(varsRes.data)) {
@@ -440,17 +484,17 @@ app.get('/:userTaskKey/form', async (req, res) => {
         variables[v.name] = v.value;
       });
     }
- 
+
     // 5️⃣ Return schema + variables
     res.json({ schema: formSchema, variables });
     console.log('✅ Form schema and variables sent to frontend');
- 
+
   } catch (err) {
     console.error('❌ Failed to fetch form:', err.response?.data || err.message || err);
     res.status(500).json({ error: 'Failed to fetch Camunda form' });
   }
 });
- 
+
 //upload files
 app.post("/upload/:userTaskKey", upload.array("files"), async (req, res) => {
   const { userTaskKey } = req.params;
@@ -460,17 +504,17 @@ app.post("/upload/:userTaskKey", upload.array("files"), async (req, res) => {
   if (!token) {
     return res.status(401).json({ message: "Unauthorized: No access token provided" });
   }
- 
+
   try {
- 
+
     // Convert uploaded files to base64 to store in memory (no document storage)
     const uploadedFiles = req.files.map((file) => {
       const fileBuffer = fs.readFileSync(file.path);
       const base64Content = fileBuffer.toString("base64");
- 
+
       // Delete temp file to keep things clean
       fs.unlinkSync(file.path);
- 
+
       return {
         name: file.originalname,
         mimeType: file.mimetype,
@@ -478,7 +522,7 @@ app.post("/upload/:userTaskKey", upload.array("files"), async (req, res) => {
         content: base64Content,
       };
     });
- 
+
     // Build completion payload
     const payload = {
       action: "complete",
@@ -489,7 +533,7 @@ app.post("/upload/:userTaskKey", upload.array("files"), async (req, res) => {
         },
       },
     };
- 
+
     // Send to Camunda REST API
     const camundaResponse = await axios.post(
       `http://localhost:8088/v2/user-tasks/${userTaskKey}/completion`,
@@ -501,7 +545,7 @@ app.post("/upload/:userTaskKey", upload.array("files"), async (req, res) => {
         },
       }
     );
- 
+
     console.log("✅ Task completed with uploaded files:", uploadedFiles);
     res.json({
       message: "Task completed successfully with uploaded files",
@@ -516,8 +560,8 @@ app.post("/upload/:userTaskKey", upload.array("files"), async (req, res) => {
     });
   }
 });
- 
- 
+
+
 // Download file stored in user task variables
 app.get('/download/:userTaskKey/:variableName', async (req, res) => {
   const { userTaskKey, variableName } = req.params;
@@ -527,9 +571,9 @@ app.get('/download/:userTaskKey/:variableName', async (req, res) => {
   if (!token) {
     return res.status(401).json({ message: "Unauthorized: No access token provided" });
   }
- 
+
   try {
- 
+
     // 🔹 POST to Camunda's variable search API
     const response = await axios.post(
       `http://localhost:8088/v2/user-tasks/${userTaskKey}/variables/search`,
@@ -548,33 +592,33 @@ app.get('/download/:userTaskKey/:variableName', async (req, res) => {
         }
       }
     );
- 
+
     const variables = response.data.items;
     if (!variables || variables.length === 0) {
       return res.status(404).json({ error: 'Variable not found' });
     }
- 
+
     const variable = variables[0];
     const fileName = variable.name || 'downloaded_file';
     const mimeType = variable.mimeType || 'application/octet-stream';
     const value = variable.value;
- 
+
     // 🔹 Handle binary/base64 file data
     const fileBuffer = Buffer.from(value, 'base64');
- 
+
     res.set({
       'Content-Type': mimeType,
       'Content-Disposition': `attachment; filename="${fileName}"`
     });
- 
+
     res.send(fileBuffer);
   } catch (err) {
     console.error('❌ Error downloading variable:', err.response?.data || err.message);
     res.status(500).json({ error: 'Failed to download variable from Camunda' });
   }
 });
- 
- 
+
+
 // ===== Start server =====
 const PORT = 3000;
 app.listen(PORT, () => console.log(`Backend running at http://localhost:${PORT}`));

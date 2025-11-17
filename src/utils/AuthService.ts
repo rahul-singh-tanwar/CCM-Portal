@@ -55,6 +55,7 @@ export class AuthService {
         tap(response => {
           // Store the token in localStorage on success
           localStorage.setItem('access_token', response.access_token);
+        localStorage.setItem('username', username); // ✅ store username
         })
       );
   }

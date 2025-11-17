@@ -15,6 +15,8 @@ import { IframeService } from '../../services/iframe.service';
 export class LeftNav {
    @Input() collapsed = false;
 
+   private static readonly PREARRANGEMENT_ROUTE = '/prearrangement';
+
    constructor(private iframeService: IframeService, private router: Router, private camundaService: CamundaService ) 
    {}
 
@@ -27,6 +29,7 @@ export class LeftNav {
     console.log('Navigating to:', route);
     this.router.navigate([route]);
     
+    if(route === LeftNav.PREARRANGEMENT_ROUTE){
     const payload = {
       processDefinitionId: 'PreArrangementProcess',
       processDefinitionVersion: -1,
@@ -43,7 +46,7 @@ export class LeftNav {
         console.error('Error starting process:', error);
       }
     );
-    
+  }
     // .then((response: any) => {
 
     //   const processInstanceKey = response?.processInstanceKey;

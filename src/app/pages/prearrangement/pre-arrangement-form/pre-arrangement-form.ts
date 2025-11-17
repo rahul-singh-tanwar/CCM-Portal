@@ -34,7 +34,7 @@ export class PreArrangementForm implements OnInit {
       policyNumber: [''],
       visitType: ['', Validators.required],
       reservationType: ['', Validators.required],
-      hospitalName: ['', Validators.required],
+     // hospitalName: ['', Validators.required],
       icd10: ['', Validators.required],
       icd9: [''],
       admissionDate: ['', Validators.required],
@@ -101,7 +101,7 @@ export class PreArrangementForm implements OnInit {
             visitInfo: {
               visitType: fv.visitType || '',
               reservationType: fv.reservationType || '',
-              HospitalName: fv.hospitalName || '',
+      //        HospitalName: fv.hospitalName || '',
               ICD10: fv.icd10 || '',
               ICD9: fv.icd9 || '',
               AdmissionDate: fv.admissionDate || '',
@@ -136,7 +136,7 @@ export class PreArrangementForm implements OnInit {
               visitInfo: {
                 visitType: fv.visitType || '',
                 reservationType: fv.reservationType || '',
-                HospitalName: fv.hospitalName || '',
+         //       HospitalName: fv.hospitalName || '',
                 ICD10: fv.icd10 || '',
                 ICD9: fv.icd9 || '',
                 AdmissionDate: fv.admissionDate || '',

@@ -56,4 +56,12 @@ export class App {
     this.router.navigate(['/prearrangement']);
   }
 
+   logout(): void {
+    // Clear auth/session
+    console.log('User logged out');
+    localStorage.removeItem('camunda_token'); // optional: clear token
+    localStorage.removeItem('username'); // ✅ remove username
+    this.router.navigate(['/login']);
+  }
+
 }

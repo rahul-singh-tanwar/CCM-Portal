@@ -1,26 +1,24 @@
 <nav class="left-nav">
 
-  <a
-    mat-button
-    [class.active]="isActive('/prearrangement')"
-    (click)="navigateTo('/prearrangement')"
-  >
+  <a mat-button [class.active]="isActive('/prearrangement')" (click)="navigateTo('/prearrangement')">
     <mat-icon>assignment</mat-icon>
-    Pre-arrangement Process
+    Launch Pre-arrangement
   </a>
-     <!-- External links that open in iframe -->
+
+  <a mat-button [class.active]="isActive('/user-tasks')" (click)="navigateTo('/user-tasks')">
+    <mat-icon>groups</mat-icon>
+    Work
+  </a>
+
+  <!-- External links that open in iframe -->
   <a mat-button routerLink="iframe" routerLinkActive="active">
     <mat-icon>dashboard</mat-icon>
     Process Dashboard
   </a>
 
-    <a
-    mat-button
-    [class.active]="isActive('/team-performance')"
-    (click)="navigateTo('/team-performance')"
-  >
+  <a mat-button [class.active]="isActive('/team-performance')" (click)="navigateTo('/team-performance')">
     <mat-icon>groups</mat-icon>
-   Task Dashboard
+    Task Dashboard
   </a>
 
   <a mat-button routerLink="/process-performance" routerLinkActive="active">
@@ -28,5 +26,5 @@
     Reports
   </a>
 
- 
+
 </nav>

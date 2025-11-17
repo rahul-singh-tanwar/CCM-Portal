@@ -7,6 +7,7 @@ import { PreArrangementForm } from './pages/prearrangement/pre-arrangement-form/
 import { Login } from './pages/login/login';
 import { ReviewPolicies } from './pages/prearrangement/review-policies/review-policies';
 import { IframeView } from './pages/iframe-view/iframe-view'; 
+import { UserTasksComponent } from './pages/prearrangement/user-tasks/user-tasks';
 
 export const routes: Routes = [
     { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -16,6 +17,7 @@ export const routes: Routes = [
     { path: 'process-performance', component: ProcessPerformance },
     { path: 'admin-console', component: AdminConsole },
     { path: 'prearrangement/form', component: PreArrangementForm },
+     { path: 'user-tasks', component: UserTasksComponent },
       { path: 'iframe', component: IframeView },
     {path: 'login', component: Login},
 ];

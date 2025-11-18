@@ -1,37 +1,57 @@
-<mat-sidenav-container class="app-container">
-  <mat-sidenav mode="side" opened class="left-sidenav">
-    <button mat-icon-button style="color:white;">
-      <mat-icon style="font-size: 32px; width: 32px; height: 32px;">space_dashboard</mat-icon>
-    </button>
-
-    <app-left-nav></app-left-nav>
-  </mat-sidenav>
-
-  <mat-sidenav-content>
-    <mat-toolbar color="primary" class="toolbar">
-      <span class="title">Pre-arrangement process</span>
-
-      <div class="toolbar-right">
-        <button mat-icon-button class="lang-btn">
-          <mat-icon>language</mat-icon>
-        </button>
-
-=        <button mat-icon-button class="profile-btn" [matMenuTriggerFor]="userMenu">
-          <mat-icon>account_circle</mat-icon>
-        </button>
-      </div>
-    </mat-toolbar>
-
-    <mat-menu #userMenu="matMenu">
-      <button mat-menu-item (click)="logout()">
-        <mat-icon>logout</mat-icon>
-        <span>Logout</span>
+<div class="app-container">
+  <header class="top-header">
+    <div class="header-left">
+      <button mat-icon-button class="menu-btn" (click)="toggleNavbar()">
+        <mat-icon>menu</mat-icon>  
       </button>
-    </mat-menu>
-
-    <div class="main-content">
-      <router-outlet></router-outlet>
+      
+      <div class="logo-section">
+        <div class="allianz-icon">
+          <img src="/allianz-logo.svg" alt="Allianz Logo" class="allianz-logo-img">
+        </div>
+      </div>
     </div>
-  </mat-sidenav-content>
 
-</mat-sidenav-container>
+    <div class="header-center">
+      <h1 class="page-title">Process Performance Dashboard</h1>
+    </div>
+
+    <div class="header-right">
+      <div class="search-box">
+        <mat-icon class="search-icon">search</mat-icon>
+        <input type="text" placeholder="Search" class="search-input">
+      </div>
+
+      <button mat-icon-button class="notification-btn">
+        <mat-icon>notifications_none</mat-icon>
+        <!-- <span class="notification-badge">1</span> -->
+      </button>
+
+      <div class="user-section">
+        <span class="user-name">{{ userName }}</span>
+        <div class="user-avatar" [matMenuTriggerFor]="userMenu">{{ userInitials }}</div>
+      </div>
+    </div>
+  </header>
+
+  <mat-menu #userMenu="matMenu">
+    <button mat-menu-item (click)="logout()">
+      <mat-icon>logout</mat-icon>
+      <span>Logout</span>
+    </button>
+  </mat-menu>
+
+  <div class="main-layout">
+    <mat-sidenav-container class="sidenav-container">
+      <mat-sidenav mode="side" [opened]="isNavbarOpen" class="left-sidenav">
+        <app-left-nav></app-left-nav>
+      </mat-sidenav>
+
+      <mat-sidenav-content class="main-content">
+        <div class="content-area">
+          <router-outlet></router-outlet>
+        </div>
+      </mat-sidenav-content>
+    </mat-sidenav-container>
+  </div>
+</div>

@@ -38,8 +38,8 @@ export class ReviewPolicies {
       expiryDate: '2024-01-01',
       firstUseDate: '2023-02-01',
       benefits: [
-        { name: 'Hospitalization', limit: '₹2,00,000', remarks: 'Covers room rent' },
-        { name: 'Medicines', limit: '₹50,000', remarks: 'Prescription only' }
+        { name: 'Hospitalization', limit: '฿2,00,000', remarks: 'Covers room rent' },
+        { name: 'Medicines', limit: '฿50,000', remarks: 'Prescription only' }
       ]
     },
     {
@@ -51,8 +51,8 @@ export class ReviewPolicies {
       expiryDate: '2024-03-10',
       firstUseDate: '2021-09-01',
       benefits: [
-        { name: 'Death Benefit', limit: '₹10,00,000', remarks: 'Full coverage' },
-        { name: 'Accidental Cover', limit: '₹5,00,000', remarks: 'Covers accidental death' }
+        { name: 'Death Benefit', limit: '฿10,00,000', remarks: 'Full coverage' },
+        { name: 'Accidental Cover', limit: '฿5,00,000', remarks: 'Covers accidental death' }
       ]
     },
     {
@@ -64,8 +64,8 @@ export class ReviewPolicies {
       expiryDate: '2025-06-01',
       firstUseDate: '2024-06-15',
       benefits: [
-        { name: 'Death Benifit', limit: '₹1,00,000', remarks: 'Includes delay compensation' },
-        { name: 'Medical Emergency', limit: '₹3,00,000', remarks: 'Covers hospitalization abroad' }
+        { name: 'Death Benifit', limit: '฿1,00,000', remarks: 'Includes delay compensation' },
+        { name: 'Medical Emergency', limit: '฿3,00,000', remarks: 'Covers hospitalization abroad' }
       ]
     },
     {
@@ -77,8 +77,8 @@ export class ReviewPolicies {
       expiryDate: '2023-09-10',
       firstUseDate: '2023-10-01',
       benefits: [
-        { name: 'Surgery Cover', limit: '₹1,50,000', remarks: 'Pre-approved surgeries only' },
-        { name: 'Diagnostics', limit: '₹25,000', remarks: 'Covers lab tests' }
+        { name: 'Surgery Cover', limit: '฿1,50,000', remarks: 'Pre-approved surgeries only' },
+        { name: 'Diagnostics', limit: '฿25,000', remarks: 'Covers lab tests' }
       ]
     }
   ];

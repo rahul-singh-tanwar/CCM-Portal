@@ -118,9 +118,39 @@ export class UserTasksComponent implements OnInit, OnDestroy {
         this.ws.onmessage = (event) => {
             const msg = JSON.parse(event.data);
 
+            // if (msg.type === 'TASK_UPDATE') {
+            //     this.applyFilters();
+            //     this.tasks = msg.data || [];
+            //     this.processNames = [...new Set(this.tasks.map(t => t.processName).filter(Boolean))];
+            //     
+            // }
+
             if (msg.type === 'TASK_UPDATE') {
-                this.tasks = msg.data || [];
-                this.processNames = [...new Set(this.tasks.map(t => t.processName).filter(Boolean))];
+
+                const incoming = msg.data || [];
+
+                const username = localStorage.getItem('username') ?? 'demo';
+
+                // 🟥 ROLE-BASED FILTER FOR DEMO USER
+                if (username === 'demo') {
+                    this.tasks = incoming.filter(
+                    (t: any) => t.name?.trim() === 'Download GOP'
+                );
+                }else {
+                    this.tasks = incoming;
+                }   
+
+                // 🔥🔥 STRICT FILTER at the data entry point
+                
+                console.log("username from localStorage:", username);
+                console.log("🔥 Filtered WebSocket tasks:", this.tasks);
+
+                // Update process names only for filtered tasks
+                this.processNames = [
+                    ...new Set(this.tasks.map(t => t.processName).filter(Boolean))
+                ];
+
+                // Re-apply table binding
                 this.applyFilters();
             }
         };
@@ -257,9 +287,9 @@ this.tasksSubscription = this.http.post<any>(
     this.filteredTasks = this.tasks.filter(task => {
 
         // 🟥 ROLE-BASED FILTER FOR DEMO USER
-        // if (username === 'demo') {
-        //     return task.name === 'Download GOP';
-        // }
+         if (username === 'demo') {
+             return task.name === 'Download GOP';
+         }
 
         // 🟦 Existing filters for all other users
         return (!this.filters.state || task.state === this.filters.state) &&

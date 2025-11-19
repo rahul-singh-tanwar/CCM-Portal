@@ -33,6 +33,7 @@ export class LeftNav {
     '/team-performance': 'Team Performance',
     '/ccm-work-queue': 'CCM Work Queue',
     '/prearrangement': 'Launch',
+    '/gop-document': 'GOP Document',
   };
 
   openIframe(url: string) {

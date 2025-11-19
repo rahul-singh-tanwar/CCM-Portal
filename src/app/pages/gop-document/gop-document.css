@@ -1,0 +1,214 @@
+.gop-document-container {
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+  background-color: #f5f5f5;
+  min-height: calc(100vh - 64px);
+}
+
+.header-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  padding: 20px;
+  background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(25, 118, 210, 0.3);
+}
+
+.document-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.document-title h1 {
+  margin: 0;
+  color: white;
+  font-size: 28px;
+  font-weight: 600;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.title-icon {
+  font-size: 32px;
+  color: white;
+}
+
+.download-btn {
+  background-color: white !important;
+  color: #1976d2 !important;
+  padding: 12px 24px;
+  font-weight: 500;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.download-btn:hover {
+  background-color: #f5f5f5 !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.download-btn:disabled {
+  background-color: #666 !important;
+  cursor: not-allowed;
+}
+
+.download-btn mat-icon {
+  font-size: 20px;
+}
+
+.spinning {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.document-card,
+.policy-card {
+  margin-bottom: 24px;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.document-card mat-card-header,
+.policy-card mat-card-header {
+  background-color: #f8f9fa;
+  border-radius: 12px 12px 0 0;
+  padding: 16px 24px;
+}
+
+.document-card mat-card-title,
+.policy-card mat-card-title {
+  color: #003876;
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.document-card mat-card-content,
+.policy-card mat-card-content {
+  padding: 24px;
+}
+
+.fields-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field-group.full-width {
+  grid-column: 1 / -1;
+}
+
+.field-group label {
+  font-weight: 600;
+  color: #555;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.field-group span {
+  padding: 12px;
+  background-color: #f8f9fa;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  font-size: 16px;
+  color: #333;
+  min-height: 20px;
+  display: flex;
+  align-items: center;
+}
+
+.field-group span.highlight {
+  background-color: #e3f2fd;
+  border-color: #003876;
+  color: #003876;
+  font-weight: 600;
+}
+
+.field-group span.amount {
+  color: #2e7d32;
+  font-weight: 600;
+}
+
+.field-group span.date {
+  color: #666;
+  font-style: italic;
+}
+
+.footer-section {
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.disclaimer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #666;
+  font-size: 14px;
+  margin: 0;
+  background-color: #fff3cd;
+  padding: 16px;
+  border-radius: 6px;
+  border-left: 4px solid #ffc107;
+}
+
+.info-icon {
+  color: #ff9800;
+  font-size: 20px;
+}
+
+@media (max-width: 768px) {
+  .gop-document-container {
+    padding: 16px;
+  }
+  
+  .header-section {
+    flex-direction: column;
+    gap: 16px;
+    align-items: stretch;
+  }
+  
+  .fields-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .document-title h1 {
+    font-size: 24px;
+  }
+}
+
+@media print {
+  .download-btn {
+    display: none;
+  }
+  
+  .gop-document-container {
+    background-color: white;
+    padding: 0;
+  }
+  
+  .document-card,
+  .policy-card {
+    box-shadow: none;
+    border: 1px solid #ddd;
+  }
+}

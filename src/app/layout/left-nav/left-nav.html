@@ -25,10 +25,10 @@
       <div class="nav-icon">
         <mat-icon>groups</mat-icon>
       </div>
-      <span class="nav-text">Team Performance</span>
+      <span class="nav-text">Task Performance</span>
     </a>
 
-    <a class="nav-item" [class.active]="isActive('/ccm-work-queue')" (click)="navigateTo('/ccm-work-queue')">
+    <a class="nav-item" *ngIf="auth.canAccess({ users: ['user1', 'user2']})" [class.active]="isActive('/ccm-work-queue')" (click)="navigateTo('/ccm-work-queue')">
       <div class="nav-icon">
         <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
           <circle cx="12" cy="7" r="3"/>
@@ -44,7 +44,7 @@
       <div class="nav-icon">
         <mat-icon>description</mat-icon>
       </div>
-      <span class="nav-text">Launch</span>
+      <span class="nav-text">Launch Pre-arrangement</span>
     </a>
 
     <a class="nav-item" [class.active]="isActive('/gop-document')" (click)="navigateTo('/gop-document')">

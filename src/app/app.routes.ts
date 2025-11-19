@@ -36,7 +36,7 @@ export const routes: Routes = [
         { path: 'review-policies', component: ReviewPolicies },
         { path: 'prearrangement', component: Prearrangement },
         { path: 'team-performance', component: TeamPerformance },
-        { path: 'process-performance', component: ProcessPerformance },
+        { path: 'process-performance', component: IframeView },
         { path: 'admin-console', component: AdminConsole },
         { path: 'prearrangement/form', component: PreArrangementForm },
         { path: 'iframe', component: IframeView },

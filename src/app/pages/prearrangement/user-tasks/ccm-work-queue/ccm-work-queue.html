@@ -1,6 +1,6 @@
 <h2 mat-dialog-title>CCM Work Queue Details</h2>
 
-<mat-dialog-content class="dialog-content">
+<div mat-dialog-content>
 
   <!-- === Eligible Policies === -->
   <section class="section">
@@ -123,7 +123,7 @@
     <p><strong>SIBM Amount:</strong> {{ data.silbmAmount || '-' }}</p>
   </section>
 
-</mat-dialog-content>
+</div>
 
 <mat-dialog-actions align="end">
   <button mat-stroked-button (click)="close()">Close</button>

@@ -1,6 +1,6 @@
 import { Component, Inject, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef, } from '@angular/material/dialog';
+import { MatDialog, MAT_DIALOG_DATA, MatDialogModule, MatDialogRef, } from '@angular/material/dialog';
 import { FileUpload } from '../file-upload/file-upload';
 import { FormsModule, NgForm } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field'; // <mat-form-field>
@@ -31,11 +31,12 @@ export class PolicyDetailsDialog {
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
     private dialogRef: MatDialogRef<PolicyDetailsDialog>,
-    private camundaService: CamundaService
+    private camundaService: CamundaService,
+    private dialog: MatDialog
   ) { }
 
   close() {
-    this.dialogRef.close();
+    this.dialog.closeAll();
   }
 
   getDateDifference(start: Date, end: Date): number {
@@ -61,52 +62,43 @@ export class PolicyDetailsDialog {
 
     this.taskname = 'Upload Documents';
     this.camundaService.processIntanceKey$.pipe(
-
-    tap(key => this.processInstanceKey = key),
-
-    switchMap(() =>
-      this.camundaService.getUserTaskByProcessInstance(
-        this.processInstanceKey,
-        this.taskname
-      )
-    ),
-
-    tap(res => {
-      this.userTaskKey = res.userTaskKey;
-    }),
-
-    tap(() => {
-      console.log('Preparing to complete task with variables: ', this.data);
-      variables = {
-        physicianNumber: this.physicianLicense,
-        selectedPolicyNumber: this.data.policyNumber,
-        simbAmount: this.simbAmount,
-        uploadFiles: uploadedFiles,
-        policyAge: this.getDateDifference(
-          new Date(this.data.effectiveDate),
-          new Date(this.data.firstUseDate)
-        ),
-      };
-    }),
-
-    switchMap(() =>
-      this.camundaService.completeUserTask(this.userTaskKey, variables)
-    ),
-
-    catchError(err => {
-      console.error('❌ Error in workflow:', err);
-      return of(null);
-    })
-
-  ).subscribe({
-    next: () => {
-      console.log('✔ Task completed successfully');
-    }
-  });
-
-
-    // Expose payload to parent via close() or custom event
-    this.close();
-    // this.dialogRef.close(payload);
+      tap(key => this.processInstanceKey = key),
+      switchMap(() =>
+        this.camundaService.getUserTaskByProcessInstance(
+          this.processInstanceKey,
+          this.taskname
+        )
+      ),
+      tap(res => {
+        this.userTaskKey = res.userTaskKey;
+      }),
+      tap(() => {
+        variables = {
+          physicianNumber: this.physicianLicense,
+          selectedPolicyNumber: this.data.policyNumber,
+          simbAmount: this.simbAmount,
+          uploadFiles: uploadedFiles,
+          policyAge: this.getDateDifference(
+            new Date(this.data.effectiveDate),
+            new Date(this.data.firstUseDate)
+          ),
+        };
+      }),
+      switchMap(() =>
+        this.camundaService.completeUserTask(this.userTaskKey, variables)
+      ),
+      catchError(err => {
+        console.error('❌ Error in workflow:', err);
+        return of(null);
+      })
+    ).subscribe({
+      next: (result) => {
+        if (result) {
+          console.log('✔ Task completed successfully');
+          this.dialogRef.close();
+          window.location.href = '/user-tasks';
+        }
+      }
+    });
   }
 }

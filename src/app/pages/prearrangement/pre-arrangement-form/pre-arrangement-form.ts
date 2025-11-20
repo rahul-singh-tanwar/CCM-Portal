@@ -85,7 +85,20 @@ export class PreArrangementForm implements OnInit {
     if (this.form.valid) {
       console.log('Form Values:', this.form.value);
 
+      // Map visitType and reservationType to display values
+      const visitTypeMap: Record<string, string> = {
+        type1: 'Sickness',
+        type2: 'Accident'
+      };
+      const reservationTypeMap: Record<string, string> = {
+        res1: 'Pre-arrangement',
+        res2: 'Pre-auth'
+      };
+
       const fv = this.form.value;
+      const mappedVisitType = visitTypeMap[fv.visitType] || fv.visitType;
+      const mappedReservationType = reservationTypeMap[fv.reservationType] || fv.reservationType;
+
       const processDefinitionId = (searchApi as any)?.processDefinitionId || 'variable need to inserted';
 
       const payload = {
@@ -99,8 +112,8 @@ export class PreArrangementForm implements OnInit {
               policyNumber: fv.policyNumber || '',
             },
             visitInfo: {
-              visitType: fv.visitType || '',
-              reservationType: fv.reservationType || '',
+              visitType: mappedVisitType,
+              reservationType: mappedReservationType,
       //        HospitalName: fv.hospitalName || '',
               ICD10: fv.icd10 || '',
               ICD9: fv.icd9 || '',
@@ -134,9 +147,9 @@ export class PreArrangementForm implements OnInit {
                 policyNumber: fv.policyNumber || '',
               },
               visitInfo: {
-                visitType: fv.visitType || '',
-                reservationType: fv.reservationType || '',
-         //       HospitalName: fv.hospitalName || '',
+                visitType: mappedVisitType,
+                reservationType: mappedReservationType,
+         //     HospitalName: fv.hospitalName || '',
                 ICD10: fv.icd10 || '',
                 ICD9: fv.icd9 || '',
                 AdmissionDate: fv.admissionDate || '',

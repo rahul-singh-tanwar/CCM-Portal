@@ -11,6 +11,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';   // if still using radios anywhere
 import { CamundaService } from '../../../../../utils/camunda.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-ccm-work-queue',
@@ -68,16 +69,25 @@ export class CcmWorkQueue {
     };
 
     let taskKey = this.data.userTaskKey || '';
-    
     this.camundaService.completeUserTask(taskKey, payload)
       .subscribe(response => {
+        Swal.fire({
+          icon: 'success',
+          title: 'Success',
+          text: 'User task completed successfully!',
+          confirmButtonColor: '#1976d2',
+        });
         console.log('User task completed successfully:', response);
+        this.dialogRef.close(payload);
       }, error => {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Error completing user task!',
+          confirmButtonColor: '#d32f2f',
+        });
         console.error('Error completing user task:', error);
       });
-    
-
-    this.dialogRef.close(payload);
   }
 
 }

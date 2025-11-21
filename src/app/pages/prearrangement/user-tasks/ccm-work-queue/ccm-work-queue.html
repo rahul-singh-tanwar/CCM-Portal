@@ -186,7 +186,7 @@
     </mat-checkbox>
 
     <!-- referToTeam -->
-    <mat-form-field appearance="fill" class="team-field">
+    <mat-form-field appearance="fill" class="team-field full-width-row">
       <mat-label>Refer To Team</mat-label>
       <mat-select name="referToTeam" [(ngModel)]="referToTeam">
         <mat-option value="MedicalStaffManagerTeam">Manager's Team</mat-option>
@@ -196,7 +196,7 @@
     </mat-form-field>
   </form>
 </section>
-<mat-dialog-actions align="end">
+<mat-dialog-actions align="end" class="dialog-actions">
   <button mat-stroked-button (click)="close()">Close</button>
   <button mat-raised-button color="primary" (click)="onSubmit()">
     Submit
